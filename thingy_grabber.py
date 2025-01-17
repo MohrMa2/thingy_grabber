@@ -18,6 +18,7 @@ from dataclasses import dataclass
 import py7zr
 import glob
 import shutil
+import time
 from io import StringIO
 from html.parser import HTMLParser
 
@@ -45,6 +46,7 @@ API_THING_DOWNLOAD = "/download/?" + ACCESS_QP
 
 DOWNLOADER_COUNT = 1
 RETRY_COUNT = 3
+DOWNLOAD_WAIT_TIME = 1.5
 
 MAX_PATH_LENGTH = 250
 
@@ -300,6 +302,7 @@ class Grouping:
         for idx, thing in enumerate(self.things):
             logging.info("Downloading thing {} - {}".format(idx, thing))
             return_code = Thing(thing).download(self.download_dir, self.compress, self.api_key)
+            time.sleep(DOWNLOAD_WAIT_TIME)
             if self.quick and return_code == State.ALREADY_DOWNLOADED:
                 logging.info("Caught up, stopping.")
                 return
